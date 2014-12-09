@@ -2096,6 +2096,12 @@ IDE_Morph.prototype.settingsMenu = function () {
         'userSetStageSize'
     );
     menu.addLine();
+    // NLTK additions
+    menu.addItem(
+        'Remote execution URL...',
+        'userSetRemoteExecutionURL'
+    );
+    menu.addLine();
     addPreference(
         'Blurred shadows',
         'toggleBlurredShadows',
