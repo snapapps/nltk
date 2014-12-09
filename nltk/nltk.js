@@ -34,7 +34,15 @@ function compose(extraBehavior) {
 }
 
 override(IDE_Morph, "init", after(function() {
-    this.remoteExecutionURL = 'http://localhost:8888';
+    // Try to set a sane default for protocol and hostname. Also handle the
+    // case when we're being loaded from file://
+    var protocol = location.protocol;
+    if(protocol !== "http:" && protocol !== "https:") {
+        protocol = "http:";
+    }
+    var hostname = location.hostname || "localhost";
+
+    this.remoteExecutionURL = protocol + '//' + hostname +':8888';
 }));
 
 IDE_Morph.prototype.userSetRemoteExecutionURL = function() {
