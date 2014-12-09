@@ -90,7 +90,6 @@ BlockMorph.prototype.executeRemotely = function() {
                 if(state == "finished") {
                     // Success! Fetch the result.
                     $.get(ide.remoteExecutionURL + '/jobs/' + jobId + '/result', function(response, status, xhr) {
-                        console.log(response);
                         var value = response;
                         if (myself instanceof ReporterBlockMorph) {
                             if($.isArray(value)) {
