@@ -85,33 +85,27 @@ BlockMorph.prototype.executeRemotely = function() {
         }),
         success: function(response, status, xhr) {
             var jobId = response.id;
-            function pollServer() {
-                $.get(ide.remoteExecutionURL + '/jobs/' + jobId, function(response, status, xhr) {
-                    var state = response.state;
-                    if(state == "finished") {
-                        // Success! Fetch the result.
-                        $.get(ide.remoteExecutionURL + '/jobs/' + jobId + '/result', function(response, status, xhr) {
-                            console.log(response);
-                            var value = response;
-                            if (myself instanceof ReporterBlockMorph) {
-                                if($.isArray(value)) {
-                                    myself.showBubble(new ListWatcherMorph(new List(value)));
-                                } else {
-                                    myself.showBubble(value);
-                                }
+            $.get(ide.remoteExecutionURL + '/jobs/' + jobId, function(response, status, xhr) {
+                var state = response.state;
+                if(state == "finished") {
+                    // Success! Fetch the result.
+                    $.get(ide.remoteExecutionURL + '/jobs/' + jobId + '/result', function(response, status, xhr) {
+                        console.log(response);
+                        var value = response;
+                        if (myself instanceof ReporterBlockMorph) {
+                            if($.isArray(value)) {
+                                myself.showBubble(new ListWatcherMorph(new List(value)));
+                            } else {
+                                myself.showBubble(value);
                             }
-                        });
-                    } else if(state == "error") {
-                        // We died horribly, but Snappy does not have a way of
-                        // telling us how we died, yet.
-                        myself.showBubble("An error occurred while executing the code.")
-                    } else {
-                        // Not done yet, schedule retry.
-                        setTimeout(pollServer, POLL_WAIT);
-                    }
-                });
-            }
-            pollServer();
+                        }
+                    });
+                } else if(state == "error") {
+                    // We died horribly, but Snappy does not have a way of
+                    // telling us how we died, yet.
+                    myself.showBubble("An error occurred while executing the code.")
+                }
+            });
         },
         error: function(xhr, status, error) {
             myself.showBubble("An error occurred: " + error);
